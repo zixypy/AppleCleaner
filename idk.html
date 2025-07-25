@@ -1,74 +1,435 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>ViperWare</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViperWare - Product Loader</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0c0c0c 100%);
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #1c1c1c; /* Gray background */
+      padding: 20px;
+      overflow-x: hidden;
     }
+
+    .background-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      background-image:
+        radial-gradient(circle at 25% 25%, #ff6b35 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, #ff6b35 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
     .container {
-      border: 5px solid #0d0d0d;
-      border-radius: 25px;
-      padding: 50px;
-      text-align: center;
-      background-color: #383838;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-      width: 500px;
+      background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+      border: 1px solid #333;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      width: 100%;
+      max-width: 600px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
     }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
     .title {
-      color: orange;
-      font-size: 48px;
-      font-weight: bold;
+      background: linear-gradient(135deg, #ff6b35, #ff8f65);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 3.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: #888;
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .products-section {
+      margin-top: 30px;
+    }
+
+    .products-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 25px;
     }
+
     .products-label {
-      color: white;
-      font-size: 28px;
-      margin-bottom: 15px;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 600;
     }
-    hr {
-      border: 1px solid #333;
-      margin: 15px 0;
-    }
-    .product-row {
+
+    .status-indicator {
       display: flex;
-      justify-content: center;
       align-items: center;
+      gap: 8px;
+      color: #4ade80;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .product-grid {
+      display: grid;
       gap: 20px;
     }
-    .product {
-      color: white;
-      font-size: 20px;
+
+    .product-card {
+      background: linear-gradient(145deg, #2d2d2d, #202020);
+      border: 1px solid #404040;
+      border-radius: 16px;
+      padding: 25px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .product-card:hover::before {
+      left: 100%;
+    }
+
+    .product-card:hover {
+      transform: translateY(-2px);
+      border-color: #ff6b35;
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .product-info {
+      flex: 1;
+    }
+
+    .product-name {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .product-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .product-status {
+      background: #1a472a;
+      color: #4ade80;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid #22543d;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
     .load-button {
-      background-color: #555;
+      background: linear-gradient(135deg, #ff6b35, #ff8f65);
       color: white;
-      padding: 12px 24px;
       border: none;
+      padding: 12px 24px;
       border-radius: 12px;
-      font-size: 18px;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      flex: 1;
     }
+
+    .load-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .load-button:hover::before {
+      left: 100%;
+    }
+
     .load-button:hover {
-      background-color: #555;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    }
+
+    .load-button:active {
+      transform: translateY(0);
+    }
+
+    .load-button.loading {
+      background: #555;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .load-button.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .secondary-button {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #555;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .secondary-button:hover {
+      color: #fff;
+      border-color: #777;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .version-info {
+      color: #666;
+      font-size: 0.8rem;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+
+      .title {
+        font-size: 2.5rem;
+      }
+
+      .product-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .product-actions {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="background-pattern"></div>
+
   <div class="container">
     <div class="title">ViperWare</div>
-    <div class="products-label">Available Products:</div>
-    <hr>
-    <div class="product-row">
-      <div class="product">Fortnite Private</div>
-      <button class="load-button">Load</button>
+    <div class="subtitle">Advanced Product Loader System</div>
+
+    <div class="products-section">
+      <div class="products-header">
+        <div class="products-label">Available Products</div>
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          Online
+        </div>
+      </div>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <div class="product-header">
+            <div class="product-info">
+              <div class="product-name">Fortnite Private</div>
+              <div class="product-description">Advanced private cheat with undetected features, aimbot, ESP, and custom modifications.</div>
+            </div>
+            <div class="product-status">Ready</div>
+          </div>
+          <div class="product-actions">
+            <button class="load-button" onclick="loadProduct(this, 'Fortnite Private')">Load Product</button>
+            <button class="secondary-button" onclick="showInfo('Fortnite Private')">Info</button>
+          </div>
+          <div class="version-info">Version 3.2.1 • Last updated 2 hours ago</div>
+        </div>
+
     </div>
   </div>
+
+  <script>
+    function loadProduct(button, productName) {
+      // Prevent multiple clicks
+      if (button.classList.contains('loading')) return;
+
+      // Add loading state
+      button.classList.add('loading');
+      button.textContent = '';
+
+      // Simulate loading process
+      setTimeout(() => {
+        button.classList.remove('loading');
+        button.textContent = 'Loaded!';
+        button.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
+
+        // Show success message
+        showNotification(`${productName} loaded successfully!`, 'success');
+
+        // Reset button after 3 seconds
+        setTimeout(() => {
+          button.textContent = 'Load Product';
+          button.style.background = 'linear-gradient(135deg, #ff6b35, #ff8f65)';
+        }, 3000);
+      }, 2000);
+    }
+
+    function showInfo(productName) {
+      showNotification(`${productName} information panel opened.`, 'info');
+    }
+
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? 'linear-gradient(135deg, #4ade80, #22c55e)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        font-weight: 500;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      `;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Add some interactive background effects
+    document.addEventListener('mousemove', (e) => {
+      const container = document.querySelector('.container');
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = (y - centerY) / 20;
+      const rotateY = (centerX - x) / 20;
+
+      container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      const container = document.querySelector('.container');
+      container.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    });
+  </script>
 </body>
 </html>
