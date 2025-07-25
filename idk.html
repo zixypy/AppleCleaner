@@ -331,7 +331,7 @@
           <div class="product-header">
             <div class="product-info">
               <div class="product-name">Fortnite Private</div>
-              <div class="product-description">Advanced private cheat with undetected features, aimbot, ESP, and custom modifications.</div>
+              <div class="product-description">The best, and cheapest, undetected Fortnite cheat on the market.</div>
             </div>
             <div class="product-status">Ready</div>
           </div>
@@ -347,23 +347,18 @@
 
   <script>
     function loadProduct(button, productName) {
-      // Prevent multiple clicks
       if (button.classList.contains('loading')) return;
 
-      // Add loading state
       button.classList.add('loading');
       button.textContent = '';
 
-      // Simulate loading process
       setTimeout(() => {
         button.classList.remove('loading');
         button.textContent = 'Loaded!';
         button.style.background = 'linear-gradient(135deg, #4ade80, #22c55e)';
 
-        // Show success message
         showNotification(`${productName} loaded successfully!`, 'success');
 
-        // Reset button after 3 seconds
         setTimeout(() => {
           button.textContent = 'Load Product';
           button.style.background = 'linear-gradient(135deg, #ff6b35, #ff8f65)';
@@ -376,7 +371,6 @@
     }
 
     function showNotification(message, type = 'info') {
-      // Create notification element
       const notification = document.createElement('div');
       notification.style.cssText = `
         position: fixed;
@@ -396,12 +390,10 @@
 
       document.body.appendChild(notification);
 
-      // Animate in
       setTimeout(() => {
         notification.style.transform = 'translateX(0)';
       }, 100);
 
-      // Remove after 3 seconds
       setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
